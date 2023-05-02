@@ -3,16 +3,16 @@ library work;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
-USE work.aux_package.all;
+use work.aux_package.all;
 --------------------------------------------------------------
 entity ControlUnit is
-generic( bus_width :=16;
-		control_width:=20;
-		status_width:=13);
+generic( bus_width:integer :=16;
+	control_width:integer:=20;
+	status_width:integer:=13);
 port(	clk,rst,ena: in std_logic;	
-		done: out std_logic;	
-		Control:out std_logic_vector(control_width-1 downto 0);
-		Status:in std_logic_vector(status_width-1 downto 0);
+	done: out std_logic;	
+	Control:out std_logic_vector(control_width-1 downto 0);
+	Status:in std_logic_vector(status_width-1 downto 0)
 );
 end ControlUnit;
 --------------------------------------------------------------

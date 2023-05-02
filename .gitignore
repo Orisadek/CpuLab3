@@ -1,3 +1,11 @@
 
 Memory files/
 _info
+_lib.qdb
+_lib1_0.qdb
+_lib1_0.qpg
+_lib1_0.qtl
+_vmake
+DUT/Control.vhd.bak
+DUT/aux_package.vhd.bak
+TB/Control_tb.vhd.bak

@@ -1,5 +1,7 @@
 LIBRARY ieee;
-USE ieee.std_logic_1164.all;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
 
 
 package aux_package is
@@ -11,12 +13,12 @@ package aux_package is
 	end component;
 	
 	component Alu is
-		generic ( bus_width :=16;
-				  opc_width :=4); 
-		port( clk:  std_logic;	
-		Alu_in:  std_logic_vector(bus_width-1 downto 0);
-		A_in:  std_logic;	
-		C_in:  std_logic;	
+		generic(bus_width:integer := 16;
+			 opc_width:integer :=4); 
+		port( clk: std_logic;	
+		Alu_in:std_logic_vector(bus_width-1 downto 0);
+		A_in:std_logic;	
+		C_in:std_logic;	
 		--c_out_en: in std_logic;
 		opc:  std_logic_vector(opc_width-1 downto 0);
 		cout_value:  std_logic_vector(bus_width-1 downto 0);
@@ -69,29 +71,29 @@ package aux_package is
 	end component;
 	
 	component Datapath is
-		generic( bus_width :=16;
-			m:=;
-			n:=;
-			control_width:=15;
-			status_width:=13
+		generic( bus_width:integer :=16;
+			m:integer:=4; ------change
+			n:integer:=4;------change
+			control_width:integer:=15;
+			status_width:integer:=13
 			);
 	port(	clk:  std_logic;	
 		Prog_in:  std_logic_vector(m-1 downto 0);
 		Data_out:  std_logic_vector(n-1 downto 0);	
 		Data_in:  std_logic_vector(n-1 downto 0);	
 		Control: std_logic_vector(control_width-1 downto 0);
-		Status: std_logic_vector(status_width-1 downto 0);
+		Status: std_logic_vector(status_width-1 downto 0)
 		);
 	end component;
 	
-	entity Control is
-		generic( bus_width :=16;
-				control_width:=15;
-				status_width:=13);
-		port(	clk,rst,ena:  std_logic;	
-				done:  std_logic;	
-				Control: std_logic_vector(control_width-1 downto 0);
-				Status: std_logic_vector(status_width-1 downto 0);
+	component ControlUnit is
+		generic( bus_width:integer :=16;
+			control_width:integer:=15;
+			status_width:integer:=13);
+		port(	clk,rst,ena: std_logic;	
+			done: std_logic;	
+			Control:std_logic_vector(control_width-1 downto 0);
+			Status:std_logic_vector(status_width-1 downto 0)
 			);
 	end component;
 
