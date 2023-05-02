@@ -17,7 +17,7 @@ port(	clk: in std_logic;
 		cout_value: out std_logic_vector(bus_width-1 downto 0);
 		Cflag : out std_logic;
 		Nflag : out std_logic;
-		Zflag : out std_logic;
+		Zflag : out std_logic
 );
 end Alu;
 --------------------------------------------------------------
