@@ -23,6 +23,14 @@ begin
 	L0 : ControlUnit generic map (bus_width,control_width,status_width) port map(clk,rst,ena,done,Control,Status);
     
 	--------- start of stimulus section ------------------	
+		gen_rst : process
+        begin
+		  rst <= '1';
+		  wait for 50 ns;
+		  rst <= not rst;
+		  wait;
+        end process;
+		
         gen_clk : process
         begin
 		  clk <= '0';

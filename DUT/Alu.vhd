@@ -6,13 +6,12 @@ library work;
 USE work.aux_package.all;
 --------------------------------------------------------------
 entity Alu is
-generic( bus_width :=16;
-		opc_width :=4);
+generic( bus_width : integer:=16;
+		opc_width : integer:=4);
 port(	clk: in std_logic;	
 		Alu_in: in std_logic_vector(bus_width-1 downto 0);
 		A_in: in std_logic;	
 		C_in: in std_logic;	
-		--c_out_en: in std_logic;
 		opc: in std_logic_vector(opc_width-1 downto 0);
 		cout_value: out std_logic_vector(bus_width-1 downto 0);
 		Cflag : out std_logic;

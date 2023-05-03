@@ -11,9 +11,8 @@ generic( Dwidth: integer:=16;
 		 dept:   integer:=64);
 port(	clk,memEn: in std_logic;	
 		WmemData:	in std_logic_vector(Dwidth-1 downto 0);
-		WmemAddr,RmemAddr:	
-					in std_logic_vector(Awidth-1 downto 0);
-		RmemData: 	out std_logic_vector(Dwidth-1 downto 0)
+		WmemAddr,RmemAddr:in std_logic_vector(Awidth-1 downto 0);
+		RmemData: out std_logic_vector(Dwidth-1 downto 0)
 );
 end ProgMem;
 --------------------------------------------------------------
@@ -35,7 +34,5 @@ begin
 	    end if;
 	end if;
   end process;
-	
   RmemData <= sysRAM(conv_integer(RmemAddr));
-
 end behav;
