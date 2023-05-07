@@ -47,59 +47,102 @@ begin
 			tbProgData<=(13=>'1',others=>'0'); -- nop
 			tbProgAddr<=(others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
 			tbProgData<=(15=>'1',8=>'1',0=>'1',others=>'0'); -- mov 
 			tbProgAddr<=(0=>'1',others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
 			tbProgData<=(15=>'1',9=>'1',3=>'1',others=>'0'); -- mov 
 			tbProgAddr<=(1=>'1',others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
 			tbProgData<=(8=>'1',9=>'1',5=>'1',0=>'1',others=>'0'); -- add 
 			tbProgAddr<=(1=>'1',0=>'1',others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
 			tbProgData<=(14=>'1',,others=>'0'); -- jmp 
 			tbProgAddr<=(1=>'1',0=>'1',others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
 			tbProgData<=(13=>'1',others=>'0'); -- nop
 			tbProgAddr<=(2=>'1',others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
 			tbProgData<=(15=>'1',12=>'1',10=>'1',4=>'1',0=>'1',others=>'0'); -- ld
 			tbProgAddr<=(2=>'1',0=>'1',others=>'0');
 			progWriteTb<='1';
-			wait for 200 ns;
+			wait for 100 ns;
+			progWriteTb<='0';
+			wait;
+		end process;
 		
-		
+	data_mem_proc: process
+		begin
+			tbActive<='1';
+			tbAddr<=(others=>'0');
+			memWriteTb<='1';
+			tbMem<=(1=>'1',others=>'0');
+			wait for 100 ns;
+			tbActive<='1';
+			tbAddr<=(0=>'1',others=>'0');
+			memWriteTb<='1';
+			tbMem<=(2=>'1',others=>'0');
+			wait;
+		end process;
 		
 		
 		control_proc : process
 		begin
-			Control<=(0=>'1',others=>'0');
+			Control<=(0=>'1',others=>'0'); --fetch nop
 			wait for 1000 ns;
-			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');
+			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode nop
 			wait for 1000 ns;
-			Status<=(2=>'1',12=>'1',others=>'0');
-			wait for 1000 ns;
-			Control<=(4=>'1',11=>'1',14=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(5=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(6=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(7=>'1',10=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(7=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(8=>'1',10=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(8=>'1',others=>'0');
-			wait for 1000 ns;
-			Status<=(9=>'1',others=>'0');
+			Control<=(4=>'1',11=>'1',14=>'1',others=>'0'); --ex nop
 			wait for 1000 ns; 
+			Control<=(1=>'1',3=>'1',12=>'1',13=>'1',others=>'0'); --alu write back nop
+			wait for 1000 ns; 
+			Control<=(0=>'1',others=>'0'); --fetch mov
+			wait for 1000 ns;
+			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode mov
+			wait for 1000 ns;
+			Control<=(1=>'1',3=>'1',6=>'1',12=>'1',others=>'0'); -- mem a dir mov
+			Control<=(0=>'1',others=>'0'); --fetch mov
+			wait for 1000 ns;
+			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode mov
+			wait for 1000 ns;
+			Control<=(1=>'1',3=>'1',6=>'1',12=>'1',others=>'0'); -- mem a dir mov
+			wait for 1000 ns;
+			Control<=(0=>'1',others=>'0'); --fetch add
+			wait for 1000 ns;
+			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode add
+			wait for 1000 ns;
+			Control<=(4=>'1',11=>'1',14=>'1',others=>'0'); --ex add
+			wait for 1000 ns; 
+			Control<=(1=>'1',3=>'1',12=>'1',13=>'1',others=>'0'); --alu write back add
+			wait for 1000 ns; 
+			Control<=(0=>'1',others=>'0'); -- fetch jmp
+			wait for 1000 ns; 
+			Control<=(12=>'1',16=>'1',others=>'0'); -- branch
+			wait for 1000 ns; 
+			Control<=(0=>'1',others=>'0'); --fetch nop
+			wait for 1000 ns;
+			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode nop
+			wait for 1000 ns;
+			Control<=(4=>'1',11=>'1',14=>'1',others=>'0'); --ex nop
+			wait for 1000 ns; 
+			Control<=(1=>'1',3=>'1',12=>'1',13=>'1',others=>'0'); --alu write back nop
+			wait for 1000 ns; 
+			Control<=(0=>'1',others=>'0'); -- fetch ld
+			wait for 1000 ns; 
+			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode ld
+			wait for 1000 ns; 
+			Control <=(5=>'1',11=>'1',14=>'1',others=>'0'); -- memAdir ld
+			wait for 1000 ns; 
+			Control<=(13=>'1',others=>'0'); -- memRead
+			wait for 1000 ns; 
+			Control<=(1=>'1',3=>'1',12=>'1',17=>'1',others=>'0'); -- MemWriteBack
+			wait for 1000 ns; 
+			
         end process; 
 		
 		
