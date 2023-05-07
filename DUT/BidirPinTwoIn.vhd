@@ -18,6 +18,6 @@ architecture comb of BidirPinTwoIn is
 begin 
 	Din  <= IOpin;
 	IOpin <= DoutBus when(en='1') else (others => 'Z');
-	secSignal<=DoutSec;
+	secSignal<=SecPin;
 end comb;
 

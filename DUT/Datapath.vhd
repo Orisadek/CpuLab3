@@ -57,7 +57,7 @@ Alu_port_map : Alu generic map (bus_width,opc_width) port map(
 		Alu_in=>Alu_in,
 		A_in=>Control(7), -- Ain Control
 		C_in=>Control(14), --Cin Control
-		opc=>Control(8 downto 11), -- OPC Control
+		opc=>Control(11 downto 8), -- OPC Control
 		cout_value=>Alu_out,
 		Cflag=>Status(10), 
 		Nflag=>Status(11),
@@ -99,7 +99,7 @@ mem_port_map : dataMemTop  port map(
 		tbActive=>tbActive,
 		tbMem=>tbMemData,
 		tbAddr=>tbMemAddr,
-		busMem=>mem_in
+		busMem=>mem_in,
 		busWAddr=>mem_write_addr,
 		outBus=>mem_out
 		);
@@ -135,7 +135,9 @@ tbMemDataOut<=mem_out; ---out to the Tb
 
 process(clk,Control(0))
   begin
-	if (clk'event and clk='1' and Control(0)='1') then --IRin
+	if(rst='1') then
+	 IR<=(15=>'1',14=>'1',13=>'1',12=>'1', others=>'0');
+	elsif (clk'event and clk='1' and Control(0)='1') then --IRin
 	   IR<=IR_bus;
 	 else
 	 null;
@@ -162,8 +164,8 @@ RFaddr<=IR(11 downto 8) when Control(2 downto 1) = "00" else ---Ra
 
 ---------------------------------sign ext-------------------------------------------------------------------------
 
-central_bus <= IR(J_type_sign_ex-1 downto 0) when(Control(5)='1') else   --Imm2_in sign ext 
-			   IR(I_type_sign_ex-1 downto 0) when(Control(6)='1') else ---Imm1_in sign ext 
+central_bus <= (15 downto 4 =>'0')&IR(J_type_sign_ex-1 downto 0) when(Control(5)='1') else   --Imm2_in sign ext 
+			   (15 downto 8 =>'0')&IR(I_type_sign_ex-1 downto 0) when(Control(6)='1') else ---Imm1_in sign ext 
 			   (others => 'Z'); --high z 
 			   
 

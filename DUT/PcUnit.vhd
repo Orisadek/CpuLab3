@@ -12,11 +12,11 @@ entity Pc is
 			PCin:in std_logic;
 			PCsel:in std_logic_vector(Pcsel_width-1 downto 0);
 			AddToPc:in std_logic_vector(immToPc-1 downto 0);
-			ReadAddr:out std_logic_vector(cmd_width-1 downto 0);
+			ReadAddr:out std_logic_vector(cmd_width-1 downto 0)
 			);
 end Pc;
 
-architecture comb of Pc is
+architecture PcUnit of Pc is
 signal toPc,PcOffset : std_logic_vector(cmd_width-1 downto 0); -- from PCsel to Pc
 signal PcVal : std_logic_vector(cmd_width-1 downto 0); -- Pc value
 signal incPc : std_logic_vector(cmd_width-1 downto 0); -- from Pc to Mux
@@ -39,6 +39,7 @@ first_add1 : FA port map(
 			s => incPc(i),
 			cout => reg_one(i)
 		);
+	 end generate;
 		
 
 -----------------------------------add To PC IR IMM-----------------------------------------------------------------
@@ -62,7 +63,7 @@ first_add1 : FA port map(
 ---------------------------------------mux to PCsel--------------------------------------------------------------
 toPc<=incPc when PCsel="00" else
 	PcOffset when PCsel="01" else
-	others=>'0' when PCsel="10" else
+	(others=>'0') when PCsel="10" else
 	unaffected;
 	
 ----------------------------------------------------------------------------------------------------------------
@@ -75,5 +76,4 @@ end process;
 
 ReadAddr<=PcVal;
 
-end comb;
-
+end PcUnit;

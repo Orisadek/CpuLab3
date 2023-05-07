@@ -75,7 +75,9 @@ package aux_package is
 		RFaddr_width : integer:=4;
 		control_width: integer:=20;
 		status_width: integer:=13;
-		IR_imm_len: integer:=5
+		IR_imm_len: integer:=5;
+		I_type_sign_ex: integer:=8;
+		J_type_sign_ex : integer:=4
 		);
 	port(clk: in std_logic;	
 		rst:in std_logic;
@@ -140,10 +142,14 @@ package aux_package is
 		tbAddr:in std_logic_vector(Dwidth-1 downto 0);
 		busMem:in std_logic_vector(Dwidth-1 downto 0);
 		busWAddr:in std_logic_vector(Dwidth-1 downto 0);
-		outBus:out std_logic_vector(Dwidth-1 downto 0);
+		outBus:out std_logic_vector(Dwidth-1 downto 0)
 		);
 	end component;
 	
+	component FA IS
+	PORT (xi, yi, cin: IN std_logic;
+			  s, cout: OUT std_logic);
+	END component;
 
   
 end aux_package;

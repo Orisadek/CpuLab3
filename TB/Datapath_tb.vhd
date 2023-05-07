@@ -10,27 +10,27 @@ generic(
 		bus_width : integer:=16;
 		cmd_width : integer:=6;
 		control_width: integer:=20;
-		status_width: integer:=13;
+		status_width: integer:=13
 		);
 end tb;
 ---------------------------------------------------------
 architecture rtb of tb is
-	clk,rst,memWriteTb,progWriteTb,tbActive:  std_logic;	
-	tbMemAddr,tbMemData,tbProgData,tbMemDataOut:in std_logic_vector(bus_width-1 downto 0);
-	tbProgAddr: std_logic_vector(cmd_width-1 downto 0);
-	Control: std_logic_vector(control_width-1 downto 0);
-	Status: std_logic_vector(status_width-1 downto 0);
+	signal clk,rst,memWriteTb,progWriteTb,tbActive: std_logic;	
+	signal tbMemAddr,tbMemData,tbProgData,tbMemDataOut: std_logic_vector(bus_width-1 downto 0);
+	signal tbProgAddr: std_logic_vector(cmd_width-1 downto 0);
+	signal Control: std_logic_vector(control_width-1 downto 0);
+	signal Status: std_logic_vector(status_width-1 downto 0);
 	
 begin
-	L0 : Datapath generic map () port map(clk,rst,memWriteTb,progWriteTb,tbActive,tbMemAddr,tbMemData,tbProgAddr,
+	L0 : Datapath  port map(clk,rst,memWriteTb,progWriteTb,tbActive,tbMemAddr,tbMemData,tbProgAddr,
 		tbProgData,Control,Status,tbMemDataOut);
     
 	--------- start of stimulus section ------------------	
 		gen_rst : process
         begin
 		  rst <= '1';
-		  wait for 50 ns;
-		  rst <= not rst;
+		  wait for 500 ns;
+		  rst <= '0';
 		  wait;
         end process;
 		
@@ -38,7 +38,7 @@ begin
         begin
 		  clk <= '0';
 		  wait for 50 ns;
-		  clk <= not clk;
+		  clk <= '1';
 		  wait for 50 ns;
         end process;
 		
@@ -60,7 +60,7 @@ begin
 			tbProgAddr<=(1=>'1',0=>'1',others=>'0');
 			progWriteTb<='1';
 			wait for 100 ns;
-			tbProgData<=(14=>'1',,others=>'0'); -- jmp 
+			tbProgData<=(14=>'1',others=>'0'); -- jmp 
 			tbProgAddr<=(1=>'1',0=>'1',others=>'0');
 			progWriteTb<='1';
 			wait for 100 ns;
@@ -79,14 +79,16 @@ begin
 	data_mem_proc: process
 		begin
 			tbActive<='1';
-			tbAddr<=(others=>'0');
+			tbMemAddr<=(others=>'0');
 			memWriteTb<='1';
-			tbMem<=(1=>'1',others=>'0');
+			tbMemData<=(1=>'1',others=>'0');
 			wait for 100 ns;
 			tbActive<='1';
-			tbAddr<=(0=>'1',others=>'0');
+			tbMemAddr<=(0=>'1',others=>'0');
 			memWriteTb<='1';
-			tbMem<=(2=>'1',others=>'0');
+			tbMemData<=(2=>'1',others=>'0');
+			wait for 100 ns;
+			tbActive<='0';
 			wait;
 		end process;
 		
@@ -94,54 +96,54 @@ begin
 		control_proc : process
 		begin
 			Control<=(0=>'1',others=>'0'); --fetch nop
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode nop
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(4=>'1',11=>'1',14=>'1',others=>'0'); --ex nop
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(1=>'1',3=>'1',12=>'1',13=>'1',others=>'0'); --alu write back nop
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(0=>'1',others=>'0'); --fetch mov
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode mov
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(1=>'1',3=>'1',6=>'1',12=>'1',others=>'0'); -- mem a dir mov
 			Control<=(0=>'1',others=>'0'); --fetch mov
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode mov
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(1=>'1',3=>'1',6=>'1',12=>'1',others=>'0'); -- mem a dir mov
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(0=>'1',others=>'0'); --fetch add
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode add
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(4=>'1',11=>'1',14=>'1',others=>'0'); --ex add
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(1=>'1',3=>'1',12=>'1',13=>'1',others=>'0'); --alu write back add
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(0=>'1',others=>'0'); -- fetch jmp
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(12=>'1',16=>'1',others=>'0'); -- branch
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(0=>'1',others=>'0'); --fetch nop
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode nop
-			wait for 1000 ns;
+			wait for 100 ns;
 			Control<=(4=>'1',11=>'1',14=>'1',others=>'0'); --ex nop
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(1=>'1',3=>'1',12=>'1',13=>'1',others=>'0'); --alu write back nop
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(0=>'1',others=>'0'); -- fetch ld
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode ld
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control <=(5=>'1',11=>'1',14=>'1',others=>'0'); -- memAdir ld
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(13=>'1',others=>'0'); -- memRead
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			Control<=(1=>'1',3=>'1',12=>'1',17=>'1',others=>'0'); -- MemWriteBack
-			wait for 1000 ns; 
+			wait for 100 ns; 
 			
         end process; 
 		

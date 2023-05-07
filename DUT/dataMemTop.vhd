@@ -15,12 +15,12 @@ ENTITY dataMemTop IS
 		tbAddr:in std_logic_vector(Dwidth-1 downto 0);
 		busMem:in std_logic_vector(Dwidth-1 downto 0);
 		busWAddr:in std_logic_vector(Dwidth-1 downto 0);
-		outBus:out std_logic_vector(Dwidth-1 downto 0);
+		outBus:out std_logic_vector(Dwidth-1 downto 0)
 		);
 END dataMemTop;
 
 architecture data_mem_top of dataMemTop is
-signal memEn std_logic;
+signal memEn :std_logic;
 signal memWAddr,memRAddr:std_logic_vector(Awidth-1 downto 0);
 signal memData:std_logic_vector(Dwidth-1 downto 0);
 
@@ -47,8 +47,5 @@ memWAddr<=tbAddr(Awidth-1 downto 0) when tbActive='1' else
 		  
 memData<=tbMem when tbActive='1' else	
 		 busMem;
-
-end process;
-
 
 end data_mem_top;

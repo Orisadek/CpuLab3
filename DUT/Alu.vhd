@@ -40,7 +40,7 @@ begin
 		if(opc="0001" or opc="0010") then
 			if(opc="0001") then
 				carry(0) := '0';
-				reg_b:= Alu_in
+				reg_b:= Alu_in;
 			else
 				carry(0) := '1';
 				reg_b:= Alu_in XOR ones;
