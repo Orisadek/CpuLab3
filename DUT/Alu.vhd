@@ -27,9 +27,9 @@ begin
   variable reg_a:std_logic_vector(bus_width-1 downto 0);
   variable reg_b:std_logic_vector(bus_width-1 downto 0);
   variable res:std_logic_vector(bus_width-1 downto 0);
-  VARIABLE carry : STD_LOGIC_VECTOR (bus_width DOWNTO 0);
-  VARIABLE ones : STD_LOGIC_VECTOR (bus_width-1 DOWNTO 0);
-  VARIABLE zeroes : STD_LOGIC_VECTOR (bus_width-1 DOWNTO 0);
+  variable carry : STD_LOGIC_VECTOR (bus_width DOWNTO 0);
+  variable ones : STD_LOGIC_VECTOR (bus_width-1 DOWNTO 0);
+  variable zeroes : STD_LOGIC_VECTOR (bus_width-1 DOWNTO 0);
   
   begin
 	ones:=(others=>'1');
@@ -37,8 +37,6 @@ begin
 	if (clk'event and clk='1' and A_in='1') then
 	    reg_a:=Alu_in;
 	elsif(clk'event and clk='1' and C_in='1') then
-		cout_value<=res;
-	else
 		if(opc="0001" or opc="0010") then
 			if(opc="0001") then
 				carry(0) := '0';
@@ -61,7 +59,7 @@ begin
 			Zflag<='1';
 		end if;
 		Nflag<= res(bus_width-1);
-		
+		cout_value<=res;
 	end if;
   end process;
 	

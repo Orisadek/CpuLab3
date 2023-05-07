@@ -52,7 +52,7 @@ begin
 				nx_state<=Excute;
 			elsif(Status(6)='1' or Status(7)='1' or Status(8)='1') then --jmp,jc,jnc 
 				nx_state<=Branch;
-			elsif(Status(1)='1' or Status(0)='1' or Status(2)='1') then -- ld,st,mov
+			elsif(Status(1)='1' or Status(0)='1' or Status(2)='1') then -- ld,st,mov ---need to add done
 				Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); ---RFaddr ="01",RFout = '1',Ain='1'
 				nx_state <=MemAdir;
 			end if;
