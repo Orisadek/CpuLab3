@@ -29,7 +29,7 @@ begin
 		gen_rst : process
         begin
 		  rst <= '1';
-		  wait for 500 ns;
+		  wait for 700 ns;
 		  rst <= '0';
 		  wait;
         end process;
@@ -60,16 +60,16 @@ begin
 			tbProgAddr<=(1=>'1',0=>'1',others=>'0');
 			progWriteTb<='1';
 			wait for 100 ns;
-			tbProgData<=(14=>'1',others=>'0'); -- jmp 
-			tbProgAddr<=(1=>'1',0=>'1',others=>'0');
-			progWriteTb<='1';
-			wait for 100 ns;
-			tbProgData<=(13=>'1',others=>'0'); -- nop
+			tbProgData<=(14=>'1',0=>'1',others=>'0'); -- jmp 
 			tbProgAddr<=(2=>'1',others=>'0');
 			progWriteTb<='1';
 			wait for 100 ns;
-			tbProgData<=(15=>'1',12=>'1',10=>'1',4=>'1',0=>'1',others=>'0'); -- ld
+			tbProgData<=(13=>'1',others=>'0'); -- nop
 			tbProgAddr<=(2=>'1',0=>'1',others=>'0');
+			progWriteTb<='1';
+			wait for 100 ns;
+			tbProgData<=(15=>'1',12=>'1',10=>'1',4=>'1',0=>'1',others=>'0'); -- ld
+			tbProgAddr<=(2=>'1',1=>'1',others=>'0');
 			progWriteTb<='1';
 			wait for 100 ns;
 			progWriteTb<='0';
@@ -82,19 +82,21 @@ begin
 			tbMemAddr<=(others=>'0');
 			memWriteTb<='1';
 			tbMemData<=(1=>'1',others=>'0');
-			wait for 100 ns;
-			tbActive<='1';
+			wait for 300 ns;
+			--tbActive<='1';
 			tbMemAddr<=(0=>'1',others=>'0');
 			memWriteTb<='1';
 			tbMemData<=(2=>'1',others=>'0');
-			wait for 100 ns;
+			wait for 300 ns;
+			memWriteTb<='0';
 			tbActive<='0';
 			wait;
 		end process;
 		
-		
 		control_proc : process
 		begin
+			Control<=(16=>'1',12=>'1',others=>'0'); 
+			wait until rst='0';
 			Control<=(0=>'1',others=>'0'); --fetch nop
 			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0');  --decode nop
@@ -108,6 +110,7 @@ begin
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode mov
 			wait for 100 ns;
 			Control<=(1=>'1',3=>'1',6=>'1',12=>'1',others=>'0'); -- mem a dir mov
+			wait for 100 ns;
 			Control<=(0=>'1',others=>'0'); --fetch mov
 			wait for 100 ns;
 			Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); -- decode mov
@@ -124,7 +127,7 @@ begin
 			wait for 100 ns; 
 			Control<=(0=>'1',others=>'0'); -- fetch jmp
 			wait for 100 ns; 
-			Control<=(12=>'1',16=>'1',others=>'0'); -- branch
+			Control<=(12=>'1',15=>'1',others=>'0'); -- branch
 			wait for 100 ns; 
 			Control<=(0=>'1',others=>'0'); --fetch nop
 			wait for 100 ns;
@@ -142,9 +145,8 @@ begin
 			wait for 100 ns; 
 			Control<=(13=>'1',others=>'0'); -- memRead
 			wait for 100 ns; 
-			Control<=(1=>'1',3=>'1',12=>'1',17=>'1',others=>'0'); -- MemWriteBack
-			wait for 100 ns; 
-			
+			--Control<=(1=>'1',3=>'1',12=>'1',17=>'1',others=>'0'); -- MemWriteBack
+			--wait for 100 ns; 
         end process; 
 		
 		

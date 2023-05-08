@@ -1,5 +1,7 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+library work;
+USE work.aux_package.all;
 --------------------------------------------------------
 ENTITY FA IS
 	PORT (xi, yi, cin: IN std_logic;

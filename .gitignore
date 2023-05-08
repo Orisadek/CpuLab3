@@ -1,25 +1,10 @@
 
 Memory files/
 _info
-_lib.qdb
-_lib1_0.qdb
-_lib1_0.qpg
-_lib1_0.qtl
+*.qdb
+*.qdb
+*.qpg
+*.qtl
 _vmake
-DUT/Control.vhd.bak
-DUT/aux_package.vhd.bak
-TB/Control_tb.vhd.bak
-_lib1_2.qdb
-_lib1_2.qpg
-_lib1_2.qtl
-DUT/Datapath.vhd.bak
-DUT/PcUnit.vhd.bak
-_lib1_10.qdb
-_lib1_10.qpg
-_lib1_10.qtl
-_lib1_6.qdb
-_lib1_6.qpg
-_lib1_6.qtl
-_lib1_9.qdb
-_lib1_9.qpg
-_lib1_9.qtl
+DUT/*.vhd.bak
+TB/*.vhd.bak

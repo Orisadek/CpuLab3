@@ -19,7 +19,7 @@ end ControlUnit;
 --Status
 --- 0-st,1-ld,2-mov,3-done ,4- add,5-sub,6-jmp,7-jc,8-jnc,9-nop,10-Cflag,11-Zflag,12-Nflag
 architecture control_unit of ControlUnit is
-type state is (Reset,Fetch,Decode,Excute,AluWriteBack,Branch,MemAdir,MemReadWrite,MemWriteBack);
+type state is (Reset,Fetch,Decode,Excute,AluWriteBack,Branch,MemAdir,MemReadWrite,MemWriteBack,Done);
 signal pr_state,nx_state:state;
 
 begin	
@@ -52,12 +52,17 @@ begin
 				nx_state<=Excute;
 			elsif(Status(6)='1' or Status(7)='1' or Status(8)='1') then --jmp,jc,jnc 
 				nx_state<=Branch;
-			elsif(Status(1)='1' or Status(0)='1' or Status(2)='1') then -- ld,st,mov ---need to add done
+			elsif(Status(1)='1' or Status(0)='1' or Status(2)='1' or Status(3)='1') then -- ld,st,mov , done
+				if(Status(3)='1') then 
+					nx_state <=Done;
+				end if;
 				Control<=(2=>'1',4=>'1',7=>'1',others=>'0'); ---RFaddr ="01",RFout = '1',Ain='1'
 				nx_state <=MemAdir;
 			end if;
 -----------------------level 2------------------------------------------------
-
+		when Done=>
+			done<='1';
+			
 		when Excute=> -- nop ,add ,sub
 			if(Status(4)='1' or Status(9)='1') then -- nop ,add 
 				Control<=(4=>'1',11=>'1',14=>'1',others=>'0');---RFaddr ="00" ,RFout = '1',OPC="0001",Cin='1'

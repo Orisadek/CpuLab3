@@ -15,7 +15,10 @@ generic( bus_width : integer:=16;
 		status_width: integer:=13;
 		IR_imm_len: integer:=5;
 		I_type_sign_ex: integer:=8;
-		J_type_sign_ex : integer:=4
+		J_type_sign_ex : integer:=4;
+		Dwidth: integer:=16;
+		 Awidth: integer:=6;
+		 dept:   integer:=64
 		);
 port(	clk: in std_logic;	
 		rst:in std_logic;
@@ -39,9 +42,13 @@ signal IR_bus,central_bus:std_logic_vector(bus_width-1 downto 0); -- מנסור 
 signal Alu_in,Alu_out:std_logic_vector(bus_width-1 downto 0);  -- Alu signals
 signal RF_in,RF_out:std_logic_vector(bus_width-1 downto 0); -- register file signals
 signal RFaddr:std_logic_vector(RFaddr_width-1 downto 0); --register file bus
-signal mem_in,mem_write_addr,mem_latch_addr,mem_out:std_logic_vector(bus_width-1 downto 0); -- mem signals
+signal mem_signal_bus,mem_write_addr,mem_latch_addr,mem_out:std_logic_vector(bus_width-1 downto 0); -- mem signals
 signal PC_signal:std_logic_vector(cmd_width-1 downto 0);  -- addr from Pc
 signal IR:std_logic_vector(bus_width-1 downto 0);--  IR register
+signal RmemAddr,memWAddr:std_logic_vector(Awidth-1 downto 0);
+signal memData:std_logic_vector(bus_width-1 downto 0);
+signal memEn :std_logic;
+
 begin
 
 -----------------------------Alu port map--------------------------------------
@@ -83,26 +90,61 @@ RF_port_map : RF  port map(
 		);
 		
 ------------------------------DataMem port map--------------------------------------
-Bi_dir_Mem: BidirPinTwoIn generic map(bus_width) port map (
-			DoutBus=>mem_out,
-			en=>Control(17),--Mem_out
-			secSignal=>mem_write_addr,
-			Din=>mem_in,
-			SecPin=>mem_latch_addr,
+--Bi_dir_Mem: BidirPinTwoIn generic map(bus_width) port map (
+	--		DoutBus=>mem_out,
+	--		en=>Control(17),--Mem_out
+	--		secSignal=>mem_write_addr,
+	--		Din=>mem_in,
+	--		SecPin=>mem_latch_addr,
+	--		IOpin=>central_bus
+	--		);
+	
+Bi_dir_Mem: BidirPin generic map(bus_width) port map (
+			Dout=>mem_out,
+			en=>Control(17), --Mem_out
+			Din=>mem_signal_bus,
 			IOpin=>central_bus
 			);
-			
-mem_port_map : dataMemTop  port map(
-		clk=>clk,		
-		memWriteC=>Control(19),--Mem_wr
-		memWriteTb=>memWriteTb,
-		tbActive=>tbActive,
-		tbMem=>tbMemData,
-		tbAddr=>tbMemAddr,
-		busMem=>mem_in,
-		busWAddr=>mem_write_addr,
-		outBus=>mem_out
+		
+
+dataMem_port_map : dataMem generic map(Dwidth,Awidth,dept) port map(
+		clk=>clk,
+		memEn=>memEn,--Mem_wr	
+		WmemData=>memData,
+		WmemAddr=>memWAddr,
+		RmemAddr=>RmemAddr,
+		RmemData=>mem_out
 		);
+		
+memEn<=memWriteTb when tbActive='1' else	  
+		Control(19);
+
+RmemAddr<=tbMemAddr(Awidth-1 downto 0) when tbActive='1' else
+		mem_signal_bus(Awidth-1 downto 0);
+
+memData<=tbMemData when tbActive='1' else	  
+		mem_signal_bus;
+		
+memWAddr<=tbMemAddr(Awidth-1 downto 0) when tbActive='1' else	  
+		mem_latch_addr(Awidth-1 downto 0);	
+			
+------------------------------DataMem Code--------------------------------------		
+mem_latch_addr<=central_bus when Control(18)='1' else --Mem_in
+				unaffected;
+				
+tbMemDataOut<=mem_out; ---out to the Tb
+
+--mem_port_map : dataMemTop  port map(
+	--	clk=>clk,		
+--		memWriteC=>Control(19),--Mem_wr
+	--	memWriteTb=>memWriteTb,
+	--	tbActive=>tbActive,
+	--	tbMem=>tbMemData,
+	--	tbAddr=>RmemAddr,
+	--	busMem=>mem_in,
+	--	busWAddr=>mem_write_addr,
+	--	outBus=>mem_out
+	--	);
 		
 
 -----------------------------------ProgMem port map--------------------------------------------
@@ -126,11 +168,6 @@ Pc_port_map : Pc port map(
 		);
 		
 
-
-------------------------------DataMem Code--------------------------------------		
-mem_latch_addr<=central_bus when Control(18)='1' else --Mem_in
-				unaffected;
-tbMemDataOut<=mem_out; ---out to the Tb
 -----------------------Fetch------------------------------------------------
 
 process(clk,Control(0))

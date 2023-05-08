@@ -63,14 +63,16 @@ first_add1 : FA port map(
 ---------------------------------------mux to PCsel--------------------------------------------------------------
 toPc<=incPc when PCsel="00" else
 	PcOffset when PCsel="01" else
-	(others=>'0') when PCsel="10" else
+	(others=>'0') when PCsel="10"  else
 	unaffected;
 	
 ----------------------------------------------------------------------------------------------------------------
-PC_init:process(PCin)
+PC_init:process(clk)
 begin
 	if(PCin='1' and clk'event and clk='1') then 
 		PcVal<=toPc;
+	else
+		null;
 	end if;
 end process;
 

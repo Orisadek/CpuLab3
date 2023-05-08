@@ -18,8 +18,7 @@ end dataMem;
 --------------------------------------------------------------
 architecture behav of dataMem is
 
-type RAM is array (0 to dept-1) of 
-	std_logic_vector(Dwidth-1 downto 0);
+type RAM is array (0 to dept-1) of std_logic_vector(Dwidth-1 downto 0);
 signal sysRAM: RAM;
 
 begin			   

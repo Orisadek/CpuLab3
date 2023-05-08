@@ -36,6 +36,8 @@ begin
 	zeroes:=(others=>'0');
 	if (clk'event and clk='1' and A_in='1') then
 	    reg_a:=Alu_in;
+	elsif(clk'event and clk='0') then
+		cout_value<=res;
 	elsif(clk'event and clk='1' and C_in='1') then
 		if(opc="0001" or opc="0010") then
 			if(opc="0001") then
@@ -59,7 +61,6 @@ begin
 			Zflag<='1';
 		end if;
 		Nflag<= res(bus_width-1);
-		cout_value<=res;
 	end if;
   end process;
 	

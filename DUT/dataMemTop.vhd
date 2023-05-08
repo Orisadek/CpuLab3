@@ -1,5 +1,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+library work;
 USE work.aux_package.all;
 -------------------------------------
 ENTITY dataMemTop IS
@@ -21,26 +22,23 @@ END dataMemTop;
 
 architecture data_mem_top of dataMemTop is
 signal memEn :std_logic;
-signal memWAddr,memRAddr:std_logic_vector(Awidth-1 downto 0);
+signal memWAddr,RmemAddr:std_logic_vector(Awidth-1 downto 0);
 signal memData:std_logic_vector(Dwidth-1 downto 0);
 
 begin
-dataMem_port_map : dataMem  port map(
+dataMem_port_map : dataMem generic map(Dwidth,Awidth,dept) port map(
 		clk=>clk,
 		memEn=>memEn,--Mem_wr	
 		WmemData=>memData,
 		WmemAddr=>memWAddr,
-		RmemAddr=>memRAddr,
+		RmemAddr=>tbAddr(Awidth-1 downto 0),
 		RmemData=>outBus
 		);
-
-
 
 memEn<=memWriteTb when tbActive='1' else
 	   memWriteC;
 
-memRAddr<=tbAddr(Awidth-1 downto 0) when tbActive='1' else	  
-		  busMem(Awidth-1 downto 0);
+
 
 memWAddr<=tbAddr(Awidth-1 downto 0) when tbActive='1' else	
 		  busWAddr(Awidth-1 downto 0);
