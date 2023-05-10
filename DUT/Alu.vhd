@@ -54,13 +54,16 @@ begin
 				carry(i)) OR (reg_b(i) AND carry(i));
 			END LOOP;
 			Cflag <= carry(bus_width);
+			if(res = zeroes) then
+				Zflag<='1';
+			else
+				Zflag<='0';
+			end if;
+			Nflag<= res(bus_width-1);
 		elsif(opc="0000") then
 			null;
 		end if;	
-		if(res = zeroes) then
-			Zflag<='1';
-		end if;
-		Nflag<= res(bus_width-1);
+		
 	end if;
   end process;
 	

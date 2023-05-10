@@ -45,21 +45,30 @@ first_add1 : FA port map(
 -----------------------------------add To PC IR IMM-----------------------------------------------------------------
 	first_add_IR : FA port map(
 			xi => incPc(0),
-			yi => '0',
+			yi => AddToPc(0),
 			cin => '0',
 			s => PcOffset(0),
 			cout => reg_IR(0)
 	);
 	
-	rest_add_IR : for i in 1 to cmd_width-1 generate
+	rest_add_IR : for i in 1 to immToPc-1 generate
 		chain : FA port map(
 			xi => incPc(i),
-			yi => AddToPc(i-1),
+			yi => AddToPc(i),
 			cin => reg_IR(i-1),
 			s => PcOffset(i),
 			cout => reg_IR(i)
 		);
 	end generate;
+	
+	last : FA port map(
+			xi => incPc(immToPc),
+			yi => '0',
+			cin => reg_IR(immToPc-1),
+			s => PcOffset(immToPc),
+			cout => reg_IR(immToPc)
+		);
+		
 ---------------------------------------mux to PCsel--------------------------------------------------------------
 toPc<=incPc when PCsel="00" else
 	PcOffset when PCsel="01" else

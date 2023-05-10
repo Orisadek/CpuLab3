@@ -17,7 +17,6 @@ package aux_package is
 		Alu_in: in std_logic_vector(bus_width-1 downto 0);
 		A_in: in std_logic;	
 		C_in: in std_logic;	
-		--c_out_en: in std_logic;
 		opc: in std_logic_vector(opc_width-1 downto 0);
 		cout_value: out std_logic_vector(bus_width-1 downto 0);
 		Cflag : out std_logic;
@@ -73,8 +72,6 @@ package aux_package is
 		cmd_width : integer:=6;
 		opc_width : integer:=4;
 		RFaddr_width : integer:=4;
-		control_width: integer:=20;
-		status_width: integer:=13;
 		IR_imm_len: integer:=5;
 		I_type_sign_ex: integer:=8;
 		J_type_sign_ex : integer:=4
@@ -88,20 +85,25 @@ package aux_package is
 		tbMemData:in std_logic_vector(bus_width-1 downto 0);
 		tbProgAddr:in std_logic_vector(cmd_width-1 downto 0);
 		tbProgData:in std_logic_vector(bus_width-1 downto 0);
-		Control:in std_logic_vector(control_width-1 downto 0);
-		Status:out std_logic_vector(status_width-1 downto 0);
+		IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: in std_logic;
+		RFaddr,PCsel: in std_logic_vector(1 downto 0);
+		opc:in std_logic_vector(3 downto 0);
+		st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:out std_logic;
 		tbMemDataOut:out std_logic_vector(bus_width-1 downto 0)
 		);
 	end component;
 	
 	component ControlUnit is
-		generic( bus_width: integer :=16;
-				control_width: integer:=20;
-				status_width: integer:=13);
+		generic( bus_width: integer :=16
+				--control_width: integer:=20
+				--status_width: integer:=13
+				);
 		port(clk,rst,ena: in std_logic;	
-			done: out std_logic;	
-			Control:out std_logic_vector(control_width-1 downto 0);
-			Status:in std_logic_vector(status_width-1 downto 0)
+			done_val: out std_logic;	
+			IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: out std_logic;
+			RFaddr,PCsel: out std_logic_vector(1 downto 0);
+			opc:out std_logic_vector(3 downto 0);
+			st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:in std_logic
 			);
 	end component;
 
@@ -118,39 +120,35 @@ package aux_package is
 			);
 	end component;
 	
-	component BidirPinTwoIn is
-	generic( width: integer:=16 );
-	port(   DoutBus: in std_logic_vector(width-1 downto 0);
-			en:	in 	std_logic;
-			secSignal: out std_logic_vector(width-1 downto 0);
-			Din:out	std_logic_vector(width-1 downto 0);
-			SecPin: inout std_logic_vector(width-1 downto 0);
-			IOpin: inout std_logic_vector(width-1 downto 0)	
-	);
-	end component;
-	
-	component dataMemTop IS
-	GENERIC (Dwidth: integer:=16;
-		 Awidth: integer:=6;
-		 dept:   integer:=64);
-	PORT ( 
-		clk: in std_logic;	
-		memWriteC:in std_logic;
-		memWriteTb:in std_logic;
-		tbActive:in std_logic;
-		tbMem:in std_logic_vector(Dwidth-1 downto 0);
-		tbAddr:in std_logic_vector(Dwidth-1 downto 0);
-		busMem:in std_logic_vector(Dwidth-1 downto 0);
-		busWAddr:in std_logic_vector(Dwidth-1 downto 0);
-		outBus:out std_logic_vector(Dwidth-1 downto 0)
-		);
-	end component;
-	
 	component FA IS
 	PORT (xi, yi, cin: IN std_logic;
 			  s, cout: OUT std_logic);
 	END component;
 
+	component Top is
+	generic( bus_width : integer:=16;
+		cmd_width : integer:=6;
+		opc_width : integer:=4;
+		RFaddr_width : integer:=4;
+		IR_imm_len: integer:=5;
+		I_type_sign_ex: integer:=8;
+		J_type_sign_ex : integer:=4;
+		Dwidth: integer:=16;
+		Awidth: integer:=6;
+		dept:   integer:=64
+		);
+	port(	clk,rst,ena: in std_logic;	
+		memWriteTb:in std_logic;
+		progWriteTb:in std_logic;
+		tbActive:in std_logic;
+		tbMemAddr:in std_logic_vector(bus_width-1 downto 0);
+		tbMemData:in std_logic_vector(bus_width-1 downto 0);
+		tbProgAddr:in std_logic_vector(cmd_width-1 downto 0);
+		tbProgData:in std_logic_vector(bus_width-1 downto 0);
+		done_val: out std_logic;
+		tbMemDataOut:out std_logic_vector(bus_width-1 downto 0)		
+	);
+	end component;
   
 end aux_package;
 
