@@ -7,15 +7,14 @@ USE work.aux_package.all;
 --------------------------------------------------------------
 entity ControlUnit is
 generic( bus_width: integer :=16
-		--control_width: integer:=20;
-	--	status_width: integer:=13
+		
 		);
 port(	clk,rst,ena: in std_logic;	
-		done_val: out std_logic;
+		done: out std_logic;
 		IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: out std_logic;
 		RFaddr,PCsel: out std_logic_vector(1 downto 0);
 		opc:out std_logic_vector(3 downto 0);
-		st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:in std_logic
+		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:in std_logic
 	);
 end ControlUnit;
 --------------------------------------------------------------
@@ -31,13 +30,13 @@ mealy_seq:process(rst,clk)
 begin
 	if(rst='1') then
 		pr_state<=Reset;
-	elsif (clk'event and clk='1') then 
+	elsif (clk'event and clk='1' and ena='1') then 
 		pr_state<=nx_state;
 	end if;
 end process;
 
 ---------------------------Upper Section------------------------------------
-mealy_comb:process(st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,pr_state)
+mealy_comb:process(st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,pr_state)
 begin
 	case pr_state is
 -----------------------Reset------------------------------------------------
@@ -57,6 +56,7 @@ begin
 			RFaddr<="00";
 			PCsel<="10";
 			opc<="0000";
+			done<='0';
 			---- PCin='1',PCsel="10"
 			nx_state<=Fetch;
 -----------------------level 0------------------------------------------------
@@ -76,6 +76,7 @@ begin
 			RFaddr<="00";
 			PCsel<="00";
 			opc<="0000";
+			done<='0';
 			---- IRin="1",PCin='0',Mem_wr = '0', others => dont care
 			nx_state<=Decode;
 -----------------------level 1------------------------------------------------
@@ -100,7 +101,7 @@ begin
 				nx_state<=Excute;
 			elsif(jmp='1' or jc='1' or jnc='1') then --jmp,jc,jnc 
 				nx_state<=Branch;
-			elsif(ld='1' or st='1' or mov='1' or done='1') then -- ld,st,mov, done
+			elsif(ld='1' or st='1' or mov='1' or done_signal='1') then -- ld,st,mov,done
 				if(ld='1' or st='1') then
 					IRin<='0';
 					RFin<='0';
@@ -218,8 +219,23 @@ begin
 					opc<="0000";
 				---- RFaddr = "10",RFin ='1',Imm1='1',PCin='1',PCsel="00"
 				nx_state<=Fetch;
-			elsif(done='1') then
-				done_val<='1';
+			elsif(done_signal='1') then
+				done<='1';
+				IRin<='0';
+				RFin<='0';
+				RFout<='0';
+				Imm1_in<='0';
+				Imm2_in<='0';
+				Ain<='0';
+				PCin<='1';
+				Cout<='0';
+				Cin<='0';
+				MemOut<='0';
+				MemIn<='0';
+				Mem_wr<='0';
+				RFaddr<="00";
+				PCsel<="00";
+				opc<="0000";
 				nx_state<=Fetch;
 			else 				   --st,ld
 					IRin<='0';
@@ -308,7 +324,7 @@ begin
 					Imm1_in<='0';
 					Imm2_in<='0';
 					Ain<='0';
-					PCin<='1';
+					PCin<='0';
 					Cout<='0';
 					Cin<='0';
 					MemOut<='0';

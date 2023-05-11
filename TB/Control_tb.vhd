@@ -15,16 +15,16 @@ end tb;
 ---------------------------------------------------------
 architecture rtb of tb is
 	signal clk,rst,ena:std_logic;
-	signal done_val:std_logic;	
+	signal done:std_logic;	
 	signal IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr:  std_logic;
 	signal RFaddr,PCsel:  std_logic_vector(1 downto 0);
 	signal opc: std_logic_vector(3 downto 0);
-	signal st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag: std_logic;
+	signal st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag: std_logic;
 	
 begin
-	L0 : ControlUnit generic map (bus_width) port map(clk,rst,ena,done_val,
+	L0 : ControlUnit generic map (bus_width) port map(clk,rst,ena,done,
 	IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr,
-	RFaddr,PCsel,opc,st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag);
+	RFaddr,PCsel,opc,st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag);
     
 	--------- start of stimulus section ------------------	
 		gen_rst : process
@@ -32,6 +32,7 @@ begin
 		  rst <= '1';
 		  wait for 50 ns;
 		  rst <= not rst;
+		  ena<='1';
 		  wait;
         end process;
 		
@@ -42,13 +43,13 @@ begin
 		  clk <= not clk;
 		  wait for 50 ns;
         end process;
-	--- 0-st,1-ld,2-mov,3-done ,4- add,5-sub,6-jmp,7-jc,8-jnc,9-nop,10-Cflag,11-Zflag,12-Nflag	
+		
 		status_proc : process
 		begin
 			st<='1';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -62,7 +63,7 @@ begin
 			st<='0';
 			ld<='1';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -77,7 +78,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='1';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -92,7 +93,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='1';
+			done_signal<='1';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -106,7 +107,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='1';
 			sub<='0';
 			jmp<='0';
@@ -120,7 +121,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='1';
 			jmp<='0';
@@ -134,7 +135,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='1';
@@ -148,7 +149,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -162,7 +163,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -176,7 +177,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -190,7 +191,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';
@@ -204,7 +205,7 @@ begin
 			st<='0';
 			ld<='0';
 			mov<='0';
-			done<='0';
+			done_signal<='0';
 			add<='0';
 			sub<='0';
 			jmp<='0';

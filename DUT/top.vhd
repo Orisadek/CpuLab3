@@ -26,7 +26,7 @@ port(	clk,rst,ena: in std_logic;
 		tbMemData:in std_logic_vector(bus_width-1 downto 0);
 		tbProgAddr:in std_logic_vector(cmd_width-1 downto 0);
 		tbProgData:in std_logic_vector(bus_width-1 downto 0);
-		done_val: out std_logic;
+		done: out std_logic;
 		tbMemDataOut:out std_logic_vector(bus_width-1 downto 0)		
 	);
 end Top;
@@ -36,23 +36,19 @@ architecture top_control of Top is
 signal IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: std_logic;
 signal RFaddr,PCsel: std_logic_vector(1 downto 0);
 signal opc:std_logic_vector(3 downto 0);
-signal st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag: std_logic;
-signal memWriteTb,progWriteTb,tbActive:std_logic;
-signal tbMemAddr,tbMemData,tbProgData:std_logic_vector(bus_width-1 downto 0);
-signal tbProgAddr:std_logic_vector(cmd_width-1 downto 0);
-signal tbMemDataOut:std_logic_vector(bus_width-1 downto 0);
-
+signal st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag: std_logic;
 begin
-Control_portmap : Control generic map(bus_width) port map(clk,rst,ena,	
-		done_val,IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,
+
+Control_portMap : ControlUnit generic map(bus_width) port map(clk,rst,ena,	
+		done,IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,
 		Cin,MemOut,MemIn,Mem_wr,RFaddr,PCsel,opc,
-		st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag
+		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag
 		);
-Datapath_portmap : Datapath generic map(bus_width,cmd_width,opc_width,RFaddr_width,IR_imm_len,
-		I_type_sign_ex,J_type_sign_ex,Dwidth,Awidth,dept) port map(clk,rst,memWriteTb,progWriteTb,
+		
+Datapath_portMap : Datapath port map(clk,rst,memWriteTb,progWriteTb,
 		tbActive,tbMemAddr,tbMemData,tbProgAddr,tbProgData,IRin,RFin,RFout,
 		Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr,RFaddr,PCsel,opc,
-		st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,tbMemDataOut
+		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,tbMemDataOut
 		);
 		
 		

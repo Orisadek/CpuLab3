@@ -19,12 +19,12 @@ architecture rtb of tb is
 	signal IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr:std_logic;
 	signal RFaddr,PCsel:std_logic_vector(1 downto 0);
 	signal opc:std_logic_vector(3 downto 0);
-	signal st,ld,mov,done,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:std_logic;	
+	signal st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:std_logic;	
 begin
 	L0 : Datapath  port map(
 		clk,rst,memWriteTb,progWriteTb,tbActive,tbMemAddr,tbMemData,tbProgAddr,
 		tbProgData,IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,
-		MemIn,Mem_wr,RFaddr,PCsel,opc,st,ld,mov,done,add,sub,jmp,jc,jnc,nop,
+		MemIn,Mem_wr,RFaddr,PCsel,opc,st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,
 		Cflag,Zflag,Nflag,tbMemDataOut
 		);
     
@@ -34,6 +34,7 @@ begin
 		  rst <= '1';
 		  wait for 700 ns;
 		  rst <= '0';
+		  ena='1';
 		  wait;
         end process;
 		
