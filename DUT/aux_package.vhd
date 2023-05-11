@@ -4,12 +4,10 @@ USE ieee.std_logic_1164.all;
 
 package aux_package is
 
-
-	
 	component Alu is
 		generic ( bus_width: integer :=16;
 				  opc_width: integer :=4); 
-		port(	clk: in std_logic;	
+		port(clk: in std_logic;	
 		Alu_in: in std_logic_vector(bus_width-1 downto 0);
 		A_in: in std_logic;	
 		C_in: in std_logic;	

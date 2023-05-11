@@ -41,7 +41,6 @@ first_add1 : FA port map(
 		);
 	 end generate;
 		
-
 -----------------------------------add To PC IR IMM-----------------------------------------------------------------
 	first_add_IR : FA port map(
 			xi => incPc(0),

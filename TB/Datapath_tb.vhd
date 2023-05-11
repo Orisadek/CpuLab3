@@ -34,7 +34,6 @@ begin
 		  rst <= '1';
 		  wait for 700 ns;
 		  rst <= '0';
-		  ena='1';
 		  wait;
         end process;
 		

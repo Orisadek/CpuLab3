@@ -34,33 +34,33 @@ begin
   begin
 	ones:=(others=>'1');
 	zeroes:=(others=>'0');
-	if (clk'event and clk='1' and A_in='1') then
+	if (clk'event and clk='1' and A_in='1') then --- insert to Ain in rising edge
 	    reg_a:=Alu_in;
-	elsif(clk'event and clk='0') then
+	elsif(clk'event and clk='0') then --- C get out to the bus in falling edge (master slave)
 		cout_value<=res;
-	elsif(clk'event and clk='1' and C_in='1') then
-		if(opc="0001" or opc="0010") then
-			if(opc="0001") then
+	elsif(clk'event and clk='1' and C_in='1') then -- if we want to do a math operation
+		if(opc="0001" or opc="0010") then -- add or sub
+			if(opc="0001") then -- add
 				carry(0) := '0';
 				reg_b:= Alu_in;
 			else
-				carry(0) := '1';
+				carry(0) := '1'; -- sub
 				reg_b:= Alu_in XOR ones;
 			end if;
 		
-			FOR i IN 0 TO bus_width-1 LOOP
+			FOR i IN 0 TO bus_width-1 LOOP -- an seq option for adder
 				res(i):= reg_a(i) XOR reg_b(i) XOR carry(i);
 				carry(i+1) := (reg_a(i) AND reg_b(i)) OR (reg_a(i) AND
 				carry(i)) OR (reg_b(i) AND carry(i));
 			END LOOP;
-			Cflag <= carry(bus_width);
-			if(res = zeroes) then
+			Cflag <= carry(bus_width); -- carry
+			if(res = zeroes) then --zeroes
 				Zflag<='1';
 			else
 				Zflag<='0';
 			end if;
-			Nflag<= res(bus_width-1);
-		elsif(opc="0000") then
+			Nflag<= res(bus_width-1); -- if negative value
+		elsif(opc="0000") then -- do nothing
 			null;
 		end if;	
 		

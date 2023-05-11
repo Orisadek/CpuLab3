@@ -153,19 +153,20 @@ begin
 		mem_out<=mem_reg_out;
 	end if;
 end process;
------------------------Fetch------------------------------------------------
+-----------------------Fetch code------------------------------------------------
 
 process(clk,IRin)
   begin
 	if(rst='1') then
-	 IR<="1111000000000000";
+	 IR<="1111000000000000"; -- there is no option to "1111" in opcode
 	elsif (clk'event and clk='1' and IRin='1') then --IRin
-	   IR<=IR_bus;
+	   IR<=IR_bus; -- insert into register
 	 else
 	 null;
 	end if;
   end process;
 
+---------------------------------------set Status from IR------------------------------------------
 st<='1'when IR(bus_width-1 downto 12)="1010" else
 	'0';
 ld<='1'when IR(bus_width-1 downto 12)="1001" else
@@ -188,7 +189,6 @@ nop<='1'when IR(bus_width-1 downto 12)="0010" else
 	'0'; 
 
 
-	
 
 -----------------------------RFaddr-----------------------------------------------------------------------------
 RFaddr_bus<=IR(11 downto 8) when RFaddr = "10" else ---Ra 

@@ -65,7 +65,7 @@ begin
 			count := count+1;
 			wait until clk='1';
 		  end loop;
-			progWriteTb<='0';
+			progWriteTb<='0'; -- stop write
 			file_close(infile);
 		  wait;
         end process;
@@ -80,7 +80,7 @@ begin
 			variable count : integer;
 			begin
 				count:=0;
-				while not endfile (infile) loop -- read data 
+				while not endfile (infile) loop -- read mem data file and write to mem data
 					readline(infile,L);
 					hread(L,line_entry);
 					memWriteTb<='1';
@@ -97,7 +97,7 @@ begin
 				wait until done='1';
 				tbActive<='1';
 				ena<='0';
-				for i in 0 to dept-1 loop
+				for i in 0 to dept-1 loop -- write memdata file from  mem data
 					tbMemAddr<=conv_std_logic_vector(i,bus_width);
 					wait until clk='0';
 					hwrite(L_write,tbMemDataOut);
@@ -105,8 +105,8 @@ begin
 					wait until clk='1';
 				end loop;
 				file_close(outfile);
-				tbActive<='0';
-				ena<='1';
+				tbActive<='0'; -- choose to take from bus
+				ena<='1'; -- enable to start the states
 			wait;
         end process;
 		
