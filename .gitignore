@@ -8,3 +8,4 @@ _info
 _vmake
 DUT/*.vhd.bak
 TB/*.vhd.bak
+DOC/

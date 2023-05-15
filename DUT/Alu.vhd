@@ -27,6 +27,7 @@ begin
   variable reg_a:std_logic_vector(bus_width-1 downto 0);
   variable reg_b:std_logic_vector(bus_width-1 downto 0);
   variable res:std_logic_vector(bus_width-1 downto 0);
+  variable C_reg:std_logic_vector(bus_width-1 downto 0);
   variable carry : STD_LOGIC_VECTOR (bus_width DOWNTO 0);
   variable ones : STD_LOGIC_VECTOR (bus_width-1 DOWNTO 0);
   variable zeroes : STD_LOGIC_VECTOR (bus_width-1 DOWNTO 0);
@@ -34,11 +35,14 @@ begin
   begin
 	ones:=(others=>'1');
 	zeroes:=(others=>'0');
-	if (clk'event and clk='1' and A_in='1') then --- insert to Ain in rising edge
-	    reg_a:=Alu_in;
-	elsif(clk'event and clk='0') then --- C get out to the bus in falling edge (master slave)
-		cout_value<=res;
-	elsif(clk'event and clk='1' and C_in='1') then -- if we want to do a math operation
+	if(clk'event and clk='0') then --- C get out to the bus in falling edge (master slave)
+		cout_value<=C_reg;
+	elsif(clk'event and clk='1') then -- if we want to do a math operation
+	
+		if(A_in='1') then
+		 reg_a:=Alu_in;
+		 end if;
+		 
 		if(opc="0001" or opc="0010") then -- add or sub
 			if(opc="0001") then -- add
 				carry(0) := '0';
@@ -60,9 +64,15 @@ begin
 				Zflag<='0';
 			end if;
 			Nflag<= res(bus_width-1); -- if negative value
+			
+			if(C_in='1') then 
+				C_reg:=res;
+			end if;
 		elsif(opc="0000") then -- do nothing
 			null;
-		end if;	
+		end if;
+		
+		
 		
 	end if;
   end process;
