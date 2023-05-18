@@ -1,5 +1,5 @@
 
-Memory files/
+Memory files/*
 _info
 *.qdb
 *.qdb
@@ -8,4 +8,4 @@ _info
 _vmake
 DUT/*.vhd.bak
 TB/*.vhd.bak
-DOC/
+DOC/*

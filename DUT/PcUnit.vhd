@@ -20,6 +20,7 @@ architecture PcUnit of Pc is
 signal toPc,PcOffset : std_logic_vector(cmd_width-1 downto 0); -- from PCsel to Pc
 signal PcVal : std_logic_vector(cmd_width-1 downto 0); -- Pc value
 signal incPc : std_logic_vector(cmd_width-1 downto 0); -- from Pc to Mux
+--signal incPc1 : std_logic_vector(cmd_width-1 downto 0); -- from Pc to Mux
 signal reg_one,reg_IR : std_logic_vector(cmd_width downto 0); -- cout from fa
 begin 
 ----------------------------------- add 1 to Pc--------------------------------------------
@@ -42,27 +43,27 @@ first_add1 : FA port map(
 	 end generate;
 		
 -----------------------------------add To PC IR IMM-----------------------------------------------------------------
+
 	first_add_IR : FA port map(
-			xi => incPc(0),
+			xi => PcVal(0),
 			yi => AddToPc(0),
-			cin => '0',
+			cin => '1',
 			s => PcOffset(0),
 			cout => reg_IR(0)
 	);
 	
 	rest_add_IR : for i in 1 to immToPc-1 generate
 		chain : FA port map(
-			xi => incPc(i),
+			xi => PcVal(i),
 			yi => AddToPc(i),
 			cin => reg_IR(i-1),
 			s => PcOffset(i),
 			cout => reg_IR(i)
 		);
 	end generate;
-	
 	last : FA port map(
-			xi => incPc(immToPc),
-			yi => '0',
+			xi => PcVal(immToPc),
+			yi => AddToPc(immToPc-1),
 			cin => reg_IR(immToPc-1),
 			s => PcOffset(immToPc),
 			cout => reg_IR(immToPc)
@@ -70,7 +71,7 @@ first_add1 : FA port map(
 		
 ---------------------------------------mux to PCsel--------------------------------------------------------------
 toPc<=incPc when PCsel="00" else
-	PcOffset when PCsel="01" else
+		PcOffset when PCsel="01" else
 	(others=>'0') when PCsel="10"  else
 	unaffected;
 	

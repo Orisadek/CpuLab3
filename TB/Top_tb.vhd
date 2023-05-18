@@ -41,13 +41,13 @@ begin
 	gen_rst : process -- rst process
         begin
 		  rst <= '1';
-		  wait until tbActive='0';
+		  wait until tbActive='0'; --we want to wait until we finish reading the files
 		  rst <= '0';
 		 wait;
         end process;
 	
 	
-		read_progData: process -- read from file to program memory (init) process
+		read_progData: process -- read from file to program memory (init) process and then put the data in the program memory
 		file infile : text open read_mode is file_location_prog_init; 
         variable L : line;
 		variable line_entry : std_logic_vector(bus_width-1 downto 0);

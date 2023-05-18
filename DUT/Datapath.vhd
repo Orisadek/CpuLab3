@@ -30,7 +30,7 @@ port(	clk: in std_logic;
 		IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: in std_logic;
 		RFaddr,PCsel: in std_logic_vector(1 downto 0);
 		opc:in std_logic_vector(3 downto 0);
-		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:out std_logic;
+		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,jn:out std_logic;
 		tbMemDataOut:out std_logic_vector(bus_width-1 downto 0)
 		);
 end Datapath;
@@ -186,6 +186,9 @@ jc<='1'when IR(bus_width-1 downto 12)="0101" else
 jnc<='1'when IR(bus_width-1 downto 12)="0110" else
 	'0'; 
 nop<='1'when IR(bus_width-1 downto 12)="0010" else
+	'0'; 
+
+jn<='1'when IR(bus_width-1 downto 12)="0111" else
 	'0'; 
 
 

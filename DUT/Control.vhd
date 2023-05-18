@@ -14,7 +14,7 @@ port(	clk,rst,ena: in std_logic;
 		IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: out std_logic;
 		RFaddr,PCsel: out std_logic_vector(1 downto 0);
 		opc:out std_logic_vector(3 downto 0);
-		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:in std_logic
+		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,jn:in std_logic
 	);
 end ControlUnit;
 --------------------------------------------------------------
@@ -36,7 +36,7 @@ begin
 end process;
 
 ---------------------------Upper Section------------------------------------
-mealy_comb:process(st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,pr_state)
+mealy_comb:process(st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,pr_state,jn)
 begin
 	case pr_state is
 -----------------------Reset------------------------------------------------
@@ -99,7 +99,7 @@ begin
 				opc<="0000";	
 			---- RFaddr = "01",RFout ='1',Ain='1'
 				nx_state<=Excute;
-			elsif(jmp='1' or jc='1' or jnc='1') then --jmp,jc,jnc 
+			elsif(jmp='1' or jc='1' or jnc='1' or jn='1') then --jmp,jc,jnc 
 				nx_state<=Branch;
 			elsif(ld='1' or st='1' or mov='1' or done_signal='1') then -- ld,st,mov,done
 				if(ld='1' or st='1') then
@@ -119,6 +119,22 @@ begin
 					PCsel<="00";
 					opc<="0000";
 				-----RFaddr ="01",RFout = '1',Ain='1'
+				else
+					IRin<='0';
+					RFin<='0';
+					RFout<='0';
+					Imm1_in<='0';
+					Imm2_in<='0';
+					Ain<='0';
+					PCin<='0';
+					Cout<='0';
+					Cin<='0';
+					MemOut<='0';
+					MemIn<='0';
+					Mem_wr<='0';
+					RFaddr<="00";
+					PCsel<="00";
+					opc<="0000";
 				end if;
 				nx_state <=MemAdir;
 			end if;
@@ -163,7 +179,7 @@ begin
 			nx_state <= AluWriteBack;
 			
 		when Branch=>  --jmp,jc,jnc 
-			if(jmp='1' or (jc='1' and  Cflag='1') or (jnc='1' and Cflag='0'))then  --jmp,jc and c=1,jnc and c=0
+			if(jmp='1' or (jc='1' and  Cflag='1') or (jnc='1' and Cflag='0') or (jn='1'and Nflag='1'))then  --jmp,jc and c=1,jnc and c=0
 					IRin<='0';
 					RFin<='0';
 					RFout<='0';

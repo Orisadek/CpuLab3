@@ -82,7 +82,7 @@ package aux_package is
 		IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: in std_logic;
 		RFaddr,PCsel: in std_logic_vector(1 downto 0);
 		opc:in std_logic_vector(3 downto 0);
-		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:out std_logic;
+		st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,jn:out std_logic;
 		tbMemDataOut:out std_logic_vector(bus_width-1 downto 0)
 		);
 	end component;
@@ -97,7 +97,7 @@ package aux_package is
 			IRin,RFin,RFout,Imm1_in,Imm2_in,Ain,PCin,Cout,Cin,MemOut,MemIn,Mem_wr: out std_logic;
 			RFaddr,PCsel: out std_logic_vector(1 downto 0);
 			opc:out std_logic_vector(3 downto 0);
-			st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag:in std_logic
+			st,ld,mov,done_signal,add,sub,jmp,jc,jnc,nop,Cflag,Zflag,Nflag,jn:in std_logic
 			);
 	end component;
 

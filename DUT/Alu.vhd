@@ -54,8 +54,8 @@ begin
 		
 			FOR i IN 0 TO bus_width-1 LOOP -- an seq option for adder
 				res(i):= reg_a(i) XOR reg_b(i) XOR carry(i);
-				carry(i+1) := (reg_a(i) AND reg_b(i)) OR (reg_a(i) AND
-				carry(i)) OR (reg_b(i) AND carry(i));
+				carry(i+1) := ((reg_a(i) AND reg_b(i)) OR (reg_a(i) AND carry(i)) OR (reg_b(i) AND carry(i)));
+				
 			END LOOP;
 			Cflag <= carry(bus_width); -- carry
 			if(res = zeroes) then --zeroes
